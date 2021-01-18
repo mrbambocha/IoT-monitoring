@@ -1,0 +1,42 @@
+version: "3.3"
+services:
+    # TTN INFLUXDB ###############################
+    ttn-influxdb:
+        environment:
+            - INFLUXDB_HTTP_AUTH_ENABLED=true
+            - INFLUXDB_ADMIN_USER=admin
+            - INFLUXDB_ADMIN_PASSWORD=ttnadmin123
+            - TZ=Europe/Stockholm
+        ports:
+            - "8086:8086"
+        container_name: ttn-influxdb
+        restart: always
+        image: ttn-influxdb
+
+    # TTN GRAFANA container ####################
+    ttn-grafana:
+        ports:
+            - "3000:3000"
+        user: "1000"
+        container_name: ttn-grafana
+        environment:
+            - "GF_SECURITY_ADMIN_PASSWORD=ttnadmin123"
+            - TZ=Europe/Stockholm
+        restart: always
+        image: ttn-grafana
+
+    # TTN Python App #########################
+    ttn-python-app:
+        user: "1000"
+        environment:
+            - TTN_APP_ID=campusborlangeelsys
+            - TTN_ACCESS_KEY=ttn-account-v2.seLvoth60Fkd5u8Y7Faky86PHUBldhMqLPHVpqKE66Q
+            - INFLUXDB_HOST=192.168.1.156
+            - INFLUXDB_PORT=8086
+            - INFLUXDB_USER=admin
+            - INFLUXDB_PSWD=ttnadmin123
+            - INFLUXDB_NAME=ttndata
+            - TZ=Europe/Stockholm
+        container_name: ttn-python-app
+        restart: always
+        image: ttn-python-app
